@@ -1,0 +1,216 @@
+---
+title: "Do party gender quotas increase the election of female MPs to parliament? An analysis of the correlation between intra-party gender quotas and electoral results in Australia"
+author: "Sabrina Kreyzerman"
+thanks: "Code and data from this analysis are available at: https://github.com/sabrinakreyzerman-k/Donaldson_Paper_Gender_in_Australian_Elections."
+date: today
+date-format: long
+abstract: "This paper explores the effectiveness of party gender quotas in addressing the underrepresentation of women in parliament. With Australia as a case study, I particularly look into the Australian Labor Party and the Liberal Party of Australia, and their respective attitudes towards gender quotas and female political representation. This paper finds some evidence to support that party gender quotas can increase the election of female MPs to parliament. However, other factors may contribute to the number of female party members nominated as candidates and in which divisions."
+execute: 
+  echo: false
+  message: false
+  warning: false
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+bibliography: references.bib
+---
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(janitor)
+library(AustralianPoliticians)
+library(knitr)
+library(kableExtra)
+library(here)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+#| label: load-data
+
+## Read in datasets ##
+cleaned_politicians_data <- read_csv(here("Data/Clean/cleaned_politicians_data.csv"))
+cleaned_party_data <- read_csv(here("Data/Clean/cleaned_party_data.csv"))
+cleaned_mp_data <- read_csv(here("Data/Clean/cleaned_mp_data.csv"))
+combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))
+```
+
+# Introduction
+
+Gender quotas, both legislative and voluntary, have recently been explored by political parties across parliamentary democracies worldwide (International IDEA; Hough 2021). Defined by @beauregard_taflaga [p. 360] gender quotas impose upon political parties to “nominate a set percentage of female candidates.” Gender quotas can be mandated through federal legislation or administered through institutional policies within individual parties [@beauregard_taflaga p. 360-361]. Generally, party gender quotas are regarded as a means of addressing the underrepresentation of women serving in parliament by promoting the participation, engagement and experience of women in electoral politics [@beauregard_taflaga; @obrien_rickne].
+
+The Australian Labor Party (ALP), at the centre-left of the political spectrum [@beauregard_taflaga, p. 361], has a notable history with the adoption of gender quotas. In 1994, the Labor Party introduced its first pre-selection gender quota, which required that 35 per cent of Labor candidates in winnable divisions be female by 2002 [@hough]. "Winnable" is emphasized here because professionals worry superficial quotas that do not regulate where female candidates are nominated risk resulting in parties assigning women in divisions where they have a lower probability of winning a seat [@staszewska; @ryan_haslam, 556-557]. This has been identified as a problem particularly concerning Australia’s Liberal Party and National Party Coalition [@staszewska]. In 2012, the Labor Party increased their gender quota, enacting a 40:40:20 ratio, which meant women and men would each occupy 40% of Labor seats, at a minimum [@hough]. Most currently, the Labor Party committed in 2015 to increase female candidacy to 45 per cent by 2022 and 50 per cent by 2025 [@hough]. By contrast, the Australian Coalition has opted against the adoption of party gender quotas, and female representation within the party has been stagnant since the early 2000s [@beauregard_taflaga, p. 362]. As such, this paper asks whether party gender quotas lead to more women being elected to the Australian parliament.
+
+This paper analyzes the relationship between gender quotas and the election of women as MPs, specifically inquiring whether gender quotas are an effective means of increasing the election of women. I begin with an explanation of my methodology and data collection, followed by the results presented in conceivable and reproducible tables and figures. Lastly, I discuss what my results reveal about the correlation between gender quotas and female political representation, how these findings inform future public policy, and where future studies might seek to advance my research. My expectation is that party gender quotas do increase the election of female MPs to the Australian parliament.
+
+# Methodology
+
+## Data Collection
+
+The dataset utilized for this paper was primarily obtained from the Australian Parliamentary Handbook [@auspol], sourced from `AustralianPoliticians`, a collection of data packages assembled by @auspol. `AustralianPoliticians` is also informed by data from Wikipedia, the Australian Dictionary of Biography, and the Senate Biographies [@auspol]. Data for this paper was collected, cleaned, and analyzed in the open-source statistical computing software RStudio [@r] within the Posit Cloud data science platform [@positcloud]. The following packages were also employed in support of developing this paper: `tidyverse` [@rTidyverse], `janitor` [@rJanitor], `knitr` knitr [@rknitr], `kableExtra` [@rKableExtra], `here` [@rHere], `ggplot2` [@rGgplot2], and `dplyr` [@rDplyr].
+
+The Labor and Liberal Parties in Australia are ideal units of analysis for this paper as the Labor Party has actively adopted and increased intra-party gender quotas, while the Liberal Party has firmly rejected such mandates. Contrasting the two parties allows for a comparative analysis when investigating the effectiveness of gender quotas in increasing female political representation. Furthermore, the Labor Party has periodically updated their gender quotas since their inaugural adoption, meaning we can examine how increased gender quotas have affected the election of female MPs in Australia over time.
+
+## Data Cleaning
+
+The data obtained for this paper was a sample of 1,783 Australian political candidates, recorded from 1901 until 2021 [@auspol]. In preparing the data for this paper, I combined the datasets entitled "all," "allbyparty," and "mps" by way of their common "uniqueID" column, retaining the following variables and renaming their respective columns: the name of the political candidate, their gender, their political party, and the year they were elected to parliament. @tbl-sample-dataset provides a sample of the refined dataset.
+
+```{r}
+#| label: tbl-sample-dataset
+#| tbl-cap: "Sample of Cleaned Australian Politicians Data"
+
+combined_politician_dataset |>
+  select(uniqueID, name, gender, partyName, year_elected) |>
+  filter(uniqueID == "Adams1951" | uniqueID == "Fitzgibbon1962" | uniqueID == "Brodtmann1963" | uniqueID == "Porter1970" | uniqueID == "Bird1962") |>
+  group_by(uniqueID, name, gender, partyName, year_elected) |>
+kable(
+col.names = c("uniqueID", "Candidate Name", "Candidate Gender", "Candidate Party", "Year Elected"),
+booktabs = TRUE)
+```
+
+Upon cleaning the dataset for analysis, political candidates who were not elected to parliament were excluded from the study. Furthermore, the age of political candidates was excluded because the age of many of the candidates was undocumented, ruling out its utility as a control variable. Notably, the data includes candidates that may have been re-elected.
+
+# Findings & Discussion
+
+## Female Labor Party MPs elected to Parliament following gender quotas
+
+Following their introduction in 1994, gender quotas within the Australian Labor Party were amended in 2012 and 2015, identifying new ratio objectives. @tbl-female-labor-mps displays the number of female Labor MPs elected to the Australian parliament in the election years directly following the adoption and revision of intra-party gender quotas. These elections occurred in 1996 (38th Parliament), 2013 (44th Parliament), and 2016 (45th Parliament) (Australian Electoral Commission). Additionally, @tbl-female-labor-mps incorporates the election year immediately preceding the first Labor Party gender quota in 1993 (37th Parliament), as well as the 2010 election (43rd Parliament), which directly preceded 2012 quota amendments. These election years were included to provide a snapshot of the election of female MPs to parliament predating Labor Party gender quotas and revisions. The 2004 election was also included as this election year followed the targeted year by which the Labor Party set out to achieve a 35% gender quota (2002).
+
+```{r}
+#| label: tbl-female-labor-mps
+#| tbl-cap: "Number of Labor Party MPs by gender elected directly following new gender quotas"
+
+combined_politician_dataset |> 
+  filter(year_elected == '1993' | year_elected == "1996" |  year_elected == "2004" | year_elected == "2010" | year_elected == "2013" | year_elected == "2016") |>
+  filter(partyName == 'Australian Labor Party') |>
+  group_by(year_elected, gender) |>
+  count() |>
+  ungroup() |>
+  pivot_wider(names_from = gender, values_from = n) |>
+  mutate(percentage = round((female / (female + male)) * 100, 2)) |>
+  kable(
+  col.names = c("Election Year", "Number of Female MPs", "Number of Male MPs", "Percentage of female MPs"),
+  booktabs = TRUE)
+```
+
+The election years in @tbl-female-labor-mps were selected in order to produce a simplified dataset that could offer insight into the immediate impact of party gender quotas. A more comprehensive scope of election years is presented later in this paper in @fig-female-mps-over-time. Importantly, there may be candidates who were excluded from my dataset because the year that they were elected was undocumented in the original data. This could simply be because they were never elected, or this data was missing for another reason.
+
+A negative effect can be observed between the election years directly preceding and following the introduction of the first Labor Party gender quotas in 1994. Merely 13% of MPs elected to parliament in 1996 were female, while nearly 23% were elected the prior election year, in 1993. However, 44% of Labor MPs elected in 2004 were female. The targeted year for the achievement of gender quotas within the Labor Party was 2002, meaning an immediate effect can be exhibited between intra-party gender quotas and the election of female MPs to parliament.
+
+The largest immediate difference between female MPs elected across subsequent election years is observed from 2010 to 2013. Following the Labor Party's gender quota revision in 2012, which required that at least 40% of elected Labor MPs be female, the number of female MPs elected to parliament increased by 15%. Not only were more than 40% of female Labor Party members nominated as candidates, but approximately 45% were elected relative to their male counterparts. While other factors may be at play, which will be taken up in a later section of this paper, this finding suggests that the 2012 increased Labor Party gender quota effectively increased the number of female MPs elected to Australian parliament. Additionally, it is worth noting that in 2010, Australia elected Julia Gillard of the Labor Party, the first woman to ever hold office as Prime Minister of Australia [@connolly].
+
+Lastly, there is a marginal difference between the election of female MPs from 2013 to 2016, when the percentage of female MPs elected to parliament decreased by roughly 3%. The 2016 Australian election directly followed the Labor Party's announcement in 2015 of new gender quota objectives for 2022 and 2025: 45 per cent and 50 per cent female candidates, respectively.
+
+## Female Liberal Party MPs elected to Parliament in the same election years
+
+The same election years selected in @tbl-female-labor-mps were enumerated in @tbl-female-liberal-mps to evaluate the same questions with respect to Australia's Liberal Party. While the Liberal Party has never adopted gender quotas, @beauregard_taflaga [p. 364] suggest gender quotas within one party might, in some cases, have a contagious effect on candidate nominations within competing parties. More importantly, isolating the same set of data from the Liberal Party allows us to identify whether gender quotas actually are a significant contributor to the election of female MPs.
+
+```{r}
+#| label: tbl-female-liberal-mps
+#| tbl-cap: "Number of Liberal Party MPs by gender elected directly following new Labor Party gender quotas"
+
+combined_politician_dataset |> 
+  filter(year_elected == '1993' | year_elected == "1996" |  year_elected == "2004" | year_elected == "2010" | year_elected == "2013" | year_elected == "2016") |>
+  filter(partyName == 'Liberal Party of Australia') |>
+  group_by(year_elected, gender) |>
+  count() |>
+  ungroup() |>
+  pivot_wider(names_from = gender, values_from = n) |>
+  mutate(percentage = round((female / (female + male)) * 100, 2)) |>
+  kable(
+  col.names = c("Election Year", "Number of Female MPs", "Number of Male MPs", "Percentage of female MPs"),
+  booktabs = TRUE)
+```
+
+The first noteworthy observation from @tbl-female-liberal-mps is that the percentage of female Liberal MPs elected to parliament in 1996, following the Labor Party's introduction of gender quotas, increased by 10% from the previous election year. After 1996, this figure substantially decreased to 7%, with the Liberal Party not having more than 26% female MPs elected again, within the timeframe observed in @tbl-female-liberal-mps.
+
+A marginal increase is revealed in the percentage of female Liberal MPs elected to parliament in the consecutive election years of 2010 and 2013, from 22% to 26%. Lastly, this figure drops to 18% in the following election in 2016.
+
+## Labor Party and Liberal Party Female Candidates Elected to Australian Parliament between 1983 and 2021
+
+As @tbl-female-labor-mps and @tbl-female-liberal-mps separately display the percentage of female MPs elected directly following new Labor Party gender quotas, the tables do not account for gradual effects over time.
+
+For this reason, @fig-female-mps-over-time depicts the number of both female Labor Party MPs and Liberal Party MPs elected to parliament from 1983 until 2021. This timeline was selected because five elections occurred in Australia between 1983 and 1994, when Labor Party gender quotas were introduced. This allows us to analyze the impact of gender quotas on the election of female MPs to parliament against a period in which they did not exist.
+
+Lastly, @fig-female-mps-over-time includes two line plots that respectively represent the number of female Labor Party MPs and female Liberal Party MPs elected over the selected period. Consequently, we are able to directly compare the effects of Labor Party gender quotas on the election of female MPs from each party against one another.
+
+```{r}
+#| label: fig-female-mps-over-time
+#| fig-cap: "Female Candidates Elected to Australian Parliament between 1983 and 2021"
+
+## Read in dataset ##
+combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))
+
+## Create Graph ##
+
+combined_politician_dataset %>%
+  filter(
+    partySimplifiedName %in% c("Liberals", "Labor"),
+    gender == "female",
+    member == 1,
+    !is.na(year_elected),
+    year_elected >= 1983,
+    year_elected <= 2021) |>
+  group_by(year_elected, partySimplifiedName) |>
+  summarise(n_females = n_distinct(uniqueID), .groups = "drop") |>
+
+ggplot(mapping = aes(x = year_elected, y = n_females,
+                  colour = partySimplifiedName,
+                  group  = partySimplifiedName)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 0) +
+  scale_colour_manual(
+    values = c("Labor" = "#E53440", "Liberals" = "#1C4F9C"),
+    labels = c("Labor" = "Australian Labor Party",
+               "Liberals" = "Liberal Party of Australia")
+  ) +
+  scale_x_continuous(
+    breaks = seq(1983, 2021, by = 3),
+    limits = c(1983, 2021)
+  ) +
+  labs(
+    title  = "Female Candidates Elected to Australian\nParliament between 1983 and 2021",
+    x      = "Election Year",
+    y      = "Number of Female Candidates Elected",
+    colour = "Party"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title       = element_text(hjust = 0.5, size = 12),
+    legend.position  = "bottom",
+    axis.text.x      = element_text(angle = 0, hjust = 0.5, size = 10),
+    axis.title.x     = element_text(size = 10),
+    axis.text.y      = element_text(angle = 0, hjust = 0.5, size = 10),
+    axis.title.y     = element_text(size = 10),
+    panel.grid.minor = element_blank()
+  )
+```
+
+@fig-female-mps-over-time reveals a non-linear relationship between intra-party gender quotas and the election of female MPs to parliament. This means that we cannot definitively conclude from the available data that party gender quotas lead to the election of more female MPs to parliament.
+
+Moreover, @fig-female-mps-over-time demonstrates that the election of female Labor Party MPs and female Liberal Party MPs to parliament were relatively aligned between 1995 to 2001, 2010 to 2013, and 2018 to 2019. Because the Labor Party has gender quotas while the Liberal Party does not, the patterns observed in @fig-female-mps-over-time indicate that perhaps some mechanisms other than gender quotas are being effectively employed within the Liberal Party. Similarly, @beauregard_taflaga [p. 363] note that even though the Liberal Party has rejected adopting intra-party gender quotas, more female MPs from the Liberal Party have historically been elected to parliament in comparison to female Labor Party MPs.
+
+Lastly, while evidence supports that gender quotas can lead to the election of more female MPs to parliament, the variation in the findings suggests that there are other contributing factors. I suspect that perhaps party leaders, party affiliation, and party policy positions may be more important considerations to voters than their local candidate. For instance, it is possible that a voter's decision is influenced more heavily by the party leader than their local representative. In this case, whether their local candidate is male or female would not matter to them. Similarly, a voter's party affiliation, or their alignment with the policy positions of one party over another, may trump their consideration of both local candidates and party leaders. Finally, various scholars have pointed to the cultures, traditions, and environments within parties that may lead a party to be more or less welcoming of women in leadership positions [@beauregard; @williams]. A political party's historical outlook and attitudes on female political representation may contribute to how many female members are nominated as candidates for the party, and in which divisions [@coma_mcdonnell].
+
+# Limitations
+
+Firstly, some candidates may not have been included within the dataset for this paper if the year that they were elected was not recorded in the original data.
+
+Secondly, the original datasets do not reveal whether the Labor Party met their gender quota objectives and when, meaning it is important to differentiate between the announcement of the quota and its achievement. For instance, the introduction of gender quotas within the Labor Party was announced in 1994 with hopes of achieving the targeted 35% of female candidates by 2002. This could perhaps explain why the number of female MPs elected to parliament in 1996 decreased from the prior election, but rose to 44% in 2004. Secondly, more research is needed to understand what alternatives to gender quotas the Liberal Party has adopted to address the underrepresentation of female candidates in their party.
+
+While the dataset used for this paper is merely a sample of Australian political candidates, the findings in this paper are relatively consistent with Hough's [-@hough] observation that the percentage of female MPs forming government in Australia has increased from 12% in 1994 to nearly 48% in 2021. With respect to the particular election years used in the dataset, it is important to note that the data sample is not perfectly representative of all Australian political candidates. This means that results with a different sample of the same size may differ slighlty from those found in this paper. A larger sample size is necessary for a more robust investigation.
+
+Lastly, though not included in the dataset, early research from the latest Australian election in 2025 reveals that 54% of Labor MPs elected to form government are female, outnumbering the male MPs in their party [@stephenson_williams].
+
+# Conclusion
+
+This paper analyzes the effects of party gender quotas in relation to female representation in parliament. This was done by using Australian elections as a case study for investigating the effectiveness of Labor Party gender quotas in increasing the election of female MPs to parliament from both the Australian Labor Party and the Liberal Party of Australia. I expected to find that the adoption and periodic increase of party gender quotas would lead to a consistent increase in the number of female MPs elected to parliament across election years. While some evidence supports this hypothesis, the data in this paper does not definitively lend to this conclusion. Using this analysis as a foundation, I invite future research to investigate the shortcomings of party gender quotas, as well as other factors that may contribute to the underrepresentation of women in parliament.
+
+\newpage
+
+# References
