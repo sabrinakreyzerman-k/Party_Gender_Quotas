@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Create table for when Labor MPs elected were female
+# Purpose: Create table for when Liberal MPs elected were female
 # Author: Sabrina Kreyzerman
 # Date: 11 May 2026
 # Contact: sabrina.kreyzerman@mail.utoronto.ca
