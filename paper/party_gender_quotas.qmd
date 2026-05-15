@@ -34,10 +34,11 @@ library(dplyr)
 #| label: load-data
 
 ## Read in datasets ##
-cleaned_politicians_data <- read_csv(here("Data/Clean/cleaned_politicians_data.csv"))
-cleaned_party_data <- read_csv(here("Data/Clean/cleaned_party_data.csv"))
-cleaned_mp_data <- read_csv(here("Data/Clean/cleaned_mp_data.csv"))
-combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))
+clean_politician_data <- read_csv(here("data/clean/clean_politician_data.csv"))
+clean_party_data <- read_csv(here("data/clean/clean_party_data.csv"))
+clean_mp_data <- read_csv(here("data/clean/clean_mp_data.csv"))
+combined_politician_data <- read_csv(here("data/clean/combined_politician_data.csv"))
+final_politician_data <- read_csv(here("data/clean/final_politician_data.csv"))
 ```
 
 # Introduction
@@ -64,13 +65,12 @@ The data obtained for this paper was a sample of 1,783 Australian political cand
 #| label: tbl-sample-dataset
 #| tbl-cap: "Sample of Cleaned Australian Politicians Data"
 
-combined_politician_dataset |>
-  select(uniqueID, name, gender, partyName, year_elected) |>
+final_politician_data |>
   filter(uniqueID == "Adams1951" | uniqueID == "Fitzgibbon1962" | uniqueID == "Brodtmann1963" | uniqueID == "Porter1970" | uniqueID == "Bird1962") |>
-  group_by(uniqueID, name, gender, partyName, year_elected) |>
-kable(
-col.names = c("uniqueID", "Candidate Name", "Candidate Gender", "Candidate Party", "Year Elected"),
-booktabs = TRUE)
+  select(uniqueID, name, gender, partyName, year_elected) |>
+  kable(
+    col.names = c("uniqueID", "Candidate Name", "Candidate Gender", "Candidate Party", "Year Elected"),
+    booktabs = TRUE)
 ```
 
 Upon cleaning the dataset for analysis, political candidates who were not elected to parliament were excluded from the study. Furthermore, the age of political candidates was excluded because the age of many of the candidates was undocumented, ruling out its utility as a control variable. Notably, the data includes candidates that may have been re-elected.
