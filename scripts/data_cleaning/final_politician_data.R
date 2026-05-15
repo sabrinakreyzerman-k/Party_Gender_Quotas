@@ -18,7 +18,10 @@ final_politician_data <- combined_politician_data |>
   select(uniqueID, name, gender, partyName, year_elected)
 
 #### Save final dataset ####
-write_csv(combined_politician_data, "data/clean/final_politician_data.csv")
+write_csv(final_politician_data, "data/clean/final_politician_data.csv")
 
 #### Read in final dataset ####
 final_politician_data <- read_csv("data/clean/final_politician_data.csv")
+
+ncol(final_politician_data)
+names(final_politician_data)
