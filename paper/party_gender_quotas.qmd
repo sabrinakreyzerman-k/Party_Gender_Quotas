@@ -1,7 +1,7 @@
 ---
 title: "Do party gender quotas increase the election of female MPs to parliament? An analysis of the correlation between intra-party gender quotas and electoral results in Australia"
 author: "Sabrina Kreyzerman"
-thanks: "Code and data from this analysis are available at: https://github.com/sabrinakreyzerman-k/Donaldson_Paper_Gender_in_Australian_Elections."
+thanks: "Code and data from this analysis are available at: https://github.com/sabrinakreyzerman-k/Party_Gender_Quotas."
 date: today
 date-format: long
 abstract: "This paper explores the effectiveness of party gender quotas in addressing the underrepresentation of women in parliament. With Australia as a case study, I particularly look into the Australian Labor Party and the Liberal Party of Australia, and their respective attitudes towards gender quotas and female political representation. This paper finds some evidence to support that party gender quotas can increase the election of female MPs to parliament. However, other factors may contribute to the number of female party members nominated as candidates and in which divisions."
@@ -85,7 +85,7 @@ Following their introduction in 1994, gender quotas within the Australian Labor 
 #| label: tbl-female-labor-mps
 #| tbl-cap: "Number of Labor Party MPs by gender elected directly following new gender quotas"
 
-combined_politician_dataset |> 
+combined_politician_data |> 
   filter(year_elected == '1993' | year_elected == "1996" |  year_elected == "2004" | year_elected == "2010" | year_elected == "2013" | year_elected == "2016") |>
   filter(partyName == 'Australian Labor Party') |>
   group_by(year_elected, gender) |>
@@ -114,7 +114,7 @@ The same election years selected in @tbl-female-labor-mps were enumerated in @tb
 #| label: tbl-female-liberal-mps
 #| tbl-cap: "Number of Liberal Party MPs by gender elected directly following new Labor Party gender quotas"
 
-combined_politician_dataset |> 
+combined_politician_data |> 
   filter(year_elected == '1993' | year_elected == "1996" |  year_elected == "2004" | year_elected == "2010" | year_elected == "2013" | year_elected == "2016") |>
   filter(partyName == 'Liberal Party of Australia') |>
   group_by(year_elected, gender) |>
@@ -144,13 +144,13 @@ Lastly, @fig-female-mps-over-time includes two line plots that respectively repr
 #| fig-cap: "Female Candidates Elected to Australian Parliament between 1983 and 2021"
 
 ## Read in dataset ##
-combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))
+combined_politician_data <- read_csv(here("data/clean/combined_politician_data.csv"))
 
 ## Create Graph ##
 
-combined_politician_dataset %>%
+combined_politician_data |>
   filter(
-    partySimplifiedName %in% c("Liberals", "Labor"),
+    partySimplifiedName |> c("Liberals", "Labor"),
     gender == "female",
     member == 1,
     !is.na(year_elected),
