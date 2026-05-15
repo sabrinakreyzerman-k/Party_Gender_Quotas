@@ -16,35 +16,30 @@ library(dplyr)
 library(AustralianPoliticians)
 
 ## Read in dataset ##
-combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))
+final_politician_data <- read_csv(here("data/clean/final_politician_data.csv"))
 
 #### Create Figure ####
 ## Female Labor MPs vs. female Liberal MPs elected from 1983-2021 ##
-## Line plot ##
 
-#| label: fig-female-mps-over-time
-#| fig-cap: "Female Candidates Elected to Australian Parliament between 1983 and 2021"
-
-combined_politician_dataset %>%
+final_politician_data |>
   filter(
-    partySimplifiedName %in% c("Liberals", "Labor"),
+    partyName %in% c("Liberal Party of Australia", "Australian Labor Party"),
     gender == "female",
-    member == 1,
     !is.na(year_elected),
     year_elected >= 1983,
     year_elected <= 2021) |>
-  group_by(year_elected, partySimplifiedName) |>
+  group_by(year_elected, partyName) |>
   summarise(n_females = n_distinct(uniqueID), .groups = "drop") |>
   
   ggplot(mapping = aes(x = year_elected, y = n_females,
-                       colour = partySimplifiedName,
-                       group  = partySimplifiedName)) +
+                       colour = partyName,
+                       group  = partyName)) +
   geom_line(linewidth = 0.5) +
   geom_point(size = 0) +
   scale_colour_manual(
-    values = c("Labor" = "#E53440", "Liberals" = "#1C4F9C"),
-    labels = c("Labor" = "Australian Labor Party",
-               "Liberals" = "Liberal Party of Australia")
+    values = c("Australian Labor Party" = "#E53440", "Liberal Party of Australia" = "#1C4F9C"),
+    labels = c("Australian Labor Party",
+               "Liberal Party of Australia")
   ) +
   scale_x_continuous(
     breaks = seq(1983, 2021, by = 3),
