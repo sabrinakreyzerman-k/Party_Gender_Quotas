@@ -7,4 +7,4 @@ This repository is structured as follows:
 * `Scripts` contains scripts in the R programming language, where the syntaxes that cleaned and combined datasets, and produced the tables and figures in the paper can be found;
 * `Paper` contains the final paper in both Quarto and PDF formats, as well as the references bibliography.
 
-For questions concerning the contents of this repository, do not hesitate to contact the author at sabrinakreyzerman@gmail.com.
+For questions concerning the contents of this repository, do not hesitate to contact the author at sabrina.kreyzerman@mail.utoronto.ca.
