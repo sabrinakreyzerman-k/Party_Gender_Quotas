@@ -45,7 +45,7 @@ clean_politician_data <- clean_politician_data |>
   left_join(clean_mp_data, by = "uniqueID")
 
 #### Save matched up dataset ####
-write_csv(clean_politician_data, "data/clean/combined_politician_dataset.csv")
+write_csv(clean_politician_data, "data/clean/combined_politician_data.csv")
 
 #### Read in matched up dataset ####
-combined_politician_data <- read_csv("data/clean/combined_politician_dataset.csv")
+combined_politician_data <- read_csv("data/clean/combined_politician_data.csv")
