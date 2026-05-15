@@ -13,6 +13,7 @@ library(janitor)
 library(here)
 library(ggplot2)
 library(dplyr)
+library(AustralianPoliticians)
 
 ## Read in dataset ##
 combined_politician_dataset <- read_csv(here("Data/Clean/combined_politician_dataset.csv"))

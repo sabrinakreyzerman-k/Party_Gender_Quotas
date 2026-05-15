@@ -12,6 +12,7 @@ library(knitr)
 library(janitor)
 library(kableExtra)
 library(here)
+library(AustralianPoliticians)
 
 ## Read in datasets ##
 cleaned_politicians_data <- read_csv(here("Data/Clean/cleaned_politicians_data.csv"))
