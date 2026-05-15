@@ -46,3 +46,6 @@ clean_politician_data <- clean_politician_data |>
 
 #### Save matched up dataset ####
 write_csv(clean_politician_data, "data/clean/combined_politician_dataset.csv")
+
+#### Read in matched up dataset ####
+combined_politician_data <- read_csv("data/clean/combined_politician_dataset.csv")
